@@ -1,0 +1,43 @@
+name: CI Quality Check
+
+# Trigger: Diese Action läuft nur bei Pull Requests auf den main Branch
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Eigener Name für den Job (statt lint-format-test)
+  code-quality-assurance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Code aus dem Repository herunterladen
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Node.js Umgebung aufsetzen mit Caching (Optionaler Teil der Aufgabe)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm' # Beschleunigt den Build durch Caching von node_modules
+
+      # 3. Abhängigkeiten installieren (Verbesserung: npm ci statt npm install)
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Linter ausführen
+      - name: Run linter
+        run: npm run lint
+      
+      # 5. Formatter prüfen (Erweiterung der Aufgabe)
+      # 'if: always()' sorgt dafür, dass dies läuft, auch wenn der Linter fehlschlägt (Optional)
+      - name: Check Formatting
+        if: always() 
+        run: npm run format:check # Annahme: Skript heisst "format:check" oder "prettier:check" in package.json
+
+      # 6. Tests ausführen (Erweiterung der Aufgabe)
+      - name: Run Tests
+        if: always()
+        run: npm test
