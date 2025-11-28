@@ -1,0 +1,21 @@
+name: PR Welcome Message
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write # Wichtig: Erlaubnis zum Schreiben von Kommentaren
+
+jobs:
+  welcome-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add comment to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            👋 Hallo! Danke für deinen Pull Request.
+            
+            Ein automatischer Prozess wird nun Linter, Formatierung und Tests prüfen.
+            Bitte gedulde dich einen Moment. 🤖
